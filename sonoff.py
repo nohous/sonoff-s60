@@ -118,10 +118,14 @@ def send_command(ip, deviceid, devicekey, apikey, params):
     return result
 
 if __name__ == '__main__':
-    DEVICE_IP = '192.168.1.28'
-    DEVICE_ID = '10026ede0c'
-    DEVICE_KEY = '3cc3bdc8-20fd-44be-b348-44b8bba4bdbb'
-    API_KEY = '265da2d7-bb39-42c4-9047-9960178f706b'
+    DEVICE_IP = '192.168.104.230'
+    DEVICE_ID = '10026edf5c'
+    API_KEY = '7f3aba54-ee51-40df-bca6-69358ed17f13'
+    DEVICE_KEY = '8584fe79-2214-495e-9494-7af70921b803'
+    #DEVICE_IP = '192.168.1.28'
+#    DEVICE_ID = '10026ede0c'
+    #DEVICE_KEY = '3cc3bdc8-20fd-44be-b348-44b8bba4bdbb'
+    #API_KEY = '265da2d7-bb39-42c4-9047-9960178f706b'
     
     # Commands: on, off
     if len(sys.argv) < 2:
