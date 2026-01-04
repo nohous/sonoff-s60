@@ -1,0 +1,15 @@
+#!/bin/sh
+echo "Content-Type: application/json"
+echo ""
+
+CMD=$(echo "$QUERY_STRING" | sed -n 's/.*cmd=\([^&]*\).*/\1/p')
+
+case "$CMD" in
+  on|off)
+    /usr/bin/sonoff "$CMD" >/dev/null 2>&1
+    echo "{\"status\":\"ok\",\"cmd\":\"$CMD\"}"
+    ;;
+  *)
+    echo "{\"status\":\"error\",\"msg\":\"invalid command\"}"
+    ;;
+esac

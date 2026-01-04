@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lamp Control</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #1a1a2e;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      gap: 30px;
+    }
+    h1 { margin: 0; font-size: 2em; }
+    .buttons { display: flex; gap: 20px; }
+    button {
+      font-size: 2em;
+      padding: 40px 80px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    button:active { transform: scale(0.95); }
+    .on {
+      background: linear-gradient(145deg, #4ade80, #22c55e);
+      color: #000;
+      box-shadow: 0 8px 30px rgba(74, 222, 128, 0.4);
+    }
+    .off {
+      background: linear-gradient(145deg, #f87171, #ef4444);
+      color: #fff;
+      box-shadow: 0 8px 30px rgba(248, 113, 113, 0.4);
+    }
+    #status {
+      font-size: 1.2em;
+      opacity: 0.7;
+      min-height: 1.5em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Lamp</h1>
+  <div class="buttons">
+    <button class="on" onclick="send('on')">ON</button>
+    <button class="off" onclick="send('off')">OFF</button>
+  </div>
+  <div id="status"></div>
+  <script>
+    async function send(cmd) {
+      const status = document.getElementById("status");
+      status.textContent = "...";
+      try {
+        const r = await fetch("/cgi-bin/sonoff?cmd=" + cmd);
+        const j = await r.json();
+        status.textContent = j.status === "ok" ? "Done!" : "Error";
+      } catch(e) {
+        status.textContent = "Failed";
+      }
+      setTimeout(() => status.textContent = "", 2000);
+    }
+  </script>
+</body>
+</html>

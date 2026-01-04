@@ -1,0 +1,3 @@
+# OpenWRT SDK (download separately)
+openwrt-sdk-*/
+*.tar.zst
