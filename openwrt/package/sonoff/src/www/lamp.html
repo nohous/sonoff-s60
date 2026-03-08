@@ -16,15 +16,16 @@
       justify-content: center;
       min-height: 100vh;
       margin: 0;
-      gap: 30px;
+      padding: 20px;
+      gap: 20px;
     }
     h1 { margin: 0; font-size: 2em; }
-    .buttons { display: flex; gap: 20px; }
+    .buttons { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
     button {
-      font-size: 2em;
-      padding: 40px 80px;
+      font-size: 1.5em;
+      padding: 30px 60px;
       border: none;
-      border-radius: 20px;
+      border-radius: 16px;
       cursor: pointer;
       font-weight: bold;
       transition: transform 0.1s, box-shadow 0.1s;
@@ -40,11 +41,33 @@
       color: #fff;
       box-shadow: 0 8px 30px rgba(248, 113, 113, 0.4);
     }
+    .energy {
+      background: linear-gradient(145deg, #60a5fa, #3b82f6);
+      color: #fff;
+      box-shadow: 0 8px 30px rgba(96, 165, 250, 0.4);
+      font-size: 1em;
+      padding: 15px 30px;
+    }
     #status {
       font-size: 1.2em;
       opacity: 0.7;
       min-height: 1.5em;
     }
+    #log {
+      background: #0f0f1a;
+      border-radius: 12px;
+      padding: 15px 20px;
+      font-family: monospace;
+      font-size: 0.85em;
+      white-space: pre;
+      overflow-x: auto;
+      max-width: 100%;
+      max-height: 50vh;
+      overflow-y: auto;
+      display: none;
+      line-height: 1.4;
+    }
+    #log.show { display: block; }
   </style>
 </head>
 <body>
@@ -53,7 +76,9 @@
     <button class="on" onclick="send('on')">ON</button>
     <button class="off" onclick="send('off')">OFF</button>
   </div>
+  <button class="energy" onclick="getEnergy()">Energy Log</button>
   <div id="status"></div>
+  <div id="log"></div>
   <script>
     async function send(cmd) {
       const status = document.getElementById("status");
@@ -66,6 +91,26 @@
         status.textContent = "Failed";
       }
       setTimeout(() => status.textContent = "", 2000);
+    }
+
+    async function getEnergy() {
+      const status = document.getElementById("status");
+      const log = document.getElementById("log");
+      status.textContent = "Loading...";
+      log.classList.remove("show");
+      try {
+        const r = await fetch("/cgi-bin/sonoff?cmd=energy");
+        const j = await r.json();
+        if (j.status === "ok") {
+          log.textContent = j.data;
+          log.classList.add("show");
+          status.textContent = "";
+        } else {
+          status.textContent = "Error";
+        }
+      } catch(e) {
+        status.textContent = "Failed";
+      }
     }
   </script>
 </body>

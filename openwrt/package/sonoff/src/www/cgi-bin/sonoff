@@ -9,6 +9,12 @@ case "$CMD" in
     /usr/bin/sonoff "$CMD" >/dev/null 2>&1
     echo "{\"status\":\"ok\",\"cmd\":\"$CMD\"}"
     ;;
+  energy)
+    DATA=$(/usr/bin/sonoff energy 2>&1)
+    # Escape for JSON
+    DATA=$(echo "$DATA" | sed 's/\\/\\\\/g; s/"/\\"/g' | tr '\n' '\\' | sed 's/\\/\\n/g')
+    echo "{\"status\":\"ok\",\"data\":\"$DATA\"}"
+    ;;
   *)
     echo "{\"status\":\"error\",\"msg\":\"invalid command\"}"
     ;;

@@ -162,21 +162,32 @@ function main() {
     let command = ARGV[0];
 
     if (command == 'energy') {
-        printf('Querying energy data (last 24 hours)...\n');
+        printf('Querying energy data (last 31 days)...\n');
 
-        let energy = get_energy(DEVICE_IP, DEVICE_ID, DEVICE_KEY, API_KEY, 0, 23);
-        printf('%J\n', energy);
+        let energy = get_energy(DEVICE_IP, DEVICE_ID, DEVICE_KEY, API_KEY, 0, 743);
 
         if (energy && energy.hoursKwhData) {
             let hours = decode_energy(energy.hoursKwhData);
-
-            printf('\nEnergy per hour (last %d hours):\n', length(hours));
             let total = 0;
+            let active_hours = 0;
+
+            printf('\nUsage log (non-zero hours only):\n');
             for (let i = 0; i < length(hours); i++) {
-                printf('  Hour %d: %.2f kWh\n', i, hours[i]);
-                total += hours[i];
+                if (hours[i] > 0) {
+                    let day = i / 24;
+                    let hour = i % 24;
+                    printf('  Day %2d  %02d:00-%02d:00  %.2f kWh\n',
+                           day, hour, (hour + 1) % 24, hours[i]);
+                    total += hours[i];
+                    active_hours++;
+                }
             }
-            printf('\nTotal: %.2f kWh\n', total);
+
+            if (active_hours == 0) {
+                printf('  (no usage recorded)\n');
+            }
+
+            printf('\nTotal: %.2f kWh (%d hours active)\n', total, active_hours);
         }
     }
     else if (command == 'on' || command == 'off') {
